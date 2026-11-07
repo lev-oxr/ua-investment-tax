@@ -163,6 +163,10 @@ try {
     chrome.kill();
   });
   server.close();
-  await rm(profile, { recursive: true, force: true });
+  // На Linux дочірні процеси Chrome ще дописують у профіль після виходу головного: пробуємо кілька разів,
+  // а якщо не вийшло — лишаємо тимчасову теку, бо на результат тесту це не впливає
+  await rm(profile, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 }).catch((e) =>
+    console.warn(`Не вдалося прибрати ${profile}: ${e.code}`),
+  );
 }
 process.exit(failed ? 1 : 0);
