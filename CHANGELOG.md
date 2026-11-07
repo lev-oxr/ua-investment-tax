@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-11-07
+
 ### Added
 
 - Вкладка «Аналітика»: угоди як пари «вхід–вихід» з FIFO-лотів, частка прибуткових, відношення середнього прибутку до збитку, очікування угоди, час утримання, гістограми й порівняння з індексом за CSV денних цін.
@@ -16,12 +18,14 @@
 ### Changed
 
 - «Разом до сплати» включає податок з дивідендів року.
+- `npm start` — власний сервер з `Cache-Control: no-cache` замість `python3 -m http.server`.
+
+### Fixed
+
 - Flex Query з кількома розділами: рядки інших розділів більше не читаються з колонками Trades.
-- `npm start` — власний сервер з `Cache-Control: no-cache` замість `python3 -m http.server`: браузер більше не змішує нові модулі зі старими з кешу.
+- Після оновлення коду локальний сервер більше не дає браузеру змішувати нові модулі зі старими з кешу.
 
-### Not in scope
-
-- Опціони, валютні обміни, злиття й виділення.
+Опціони, валютні обміни, злиття й виділення, як і раніше, не враховано.
 
 ## [1.0.0] - 2026-11-07
 
@@ -41,5 +45,6 @@
 - Content-Security-Policy: мережа лише до bank.gov.ua; системні шрифти, без аналітики.
 - Тести на `node:test`, перевірка типів за JSDoc, smoke-тест у headless Chrome, CI з публікацією на GitHub Pages, Dependabot.
 
-[Unreleased]: https://github.com/lev-oxr/ua-investment-tax/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/lev-oxr/ua-investment-tax/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/lev-oxr/ua-investment-tax/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/lev-oxr/ua-investment-tax/releases/tag/v1.0.0
