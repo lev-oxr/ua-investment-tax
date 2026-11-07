@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { esc, uah, rate4, qty, notice, files, result, detail, csv } from '../site/ui/render.js';
+import { esc, uah, rate4, qty, notice, files, result, detail, declaration, csv } from '../site/ui/render.js';
 import { totals } from '../site/core/tax.js';
 
 const NB = '\u00a0'; // uk-UA розділяє тисячі нерозривним пробілом
@@ -99,6 +99,49 @@ test('продаж без купівель: примітка, позначка, 
   assert.match(card, /Купівлю не знайдено<\/td><td>0,3<\/td>/);
   assert.equal(csv([ok, gap]).trim().split('\n').length, 2); // заголовок і один пораховний продаж
   assert.doesNotMatch(result('2025', [ok], totals([ok], 0, 2025)), /Підсумок неповний/);
+});
+
+test('декларація: продажі згруповано за тікером, без непорахованих, підсумки й рядок 10.8', () => {
+  const rows = [
+    row({ income: 1000, expense: 800, result: 200 }),
+    row({ symbol: 'MSFT', income: 500, expense: 600, result: -100 }),
+    row({ income: 300, expense: 250, result: 50 }),
+    row({ symbol: 'QQQ', missing: 0.3, result: 0 }),
+  ];
+  const html = declaration('2025', rows, totals(rows, 0, 2025));
+  // AAPL: 1000 + 300 = 1300 доходу, 800 + 250 = 1050 витрат, результат 250
+  assert.match(
+    html,
+    /<b>AAPL<\/b> <span class="dim">· продажів: 2<\/span><\/td>\s*<td>1\u00a0300,00<\/td><td>1\u00a0050,00<\/td><td class="pos">250,00<\/td>/,
+  );
+  assert.match(html, /<b>MSFT<\/b>/);
+  assert.doesNotMatch(html, /<b>QQQ<\/b>/);
+  assert.match(html, /Підсумок неповний/);
+  // база 150: рядок 3.1 = 150, 4 і 4.2 = 27 (18%), 5 і 5.2 = 7,50 (5%), утримань агентом немає
+  const cell = (no) =>
+    html.match(
+      new RegExp(`<td class="l no">${no.replace('.', '\\.')}</td><td class="l">[^<]*</td><td>([^<]*)</td>`),
+    )[1];
+  assert.deepEqual(['2', '3.1', '3.2', '4', '4.1', '4.2', '5', '5.1', '5.2'].map(cell), [
+    '0,00',
+    '150,00',
+    '0,00',
+    '27,00',
+    '0,00',
+    '27,00',
+    '7,50',
+    '0,00',
+    '7,50',
+  ]);
+  // рядок 10.8 декларації: гр. 3 = 3.1, гр. 4–5 = 4.1 і 5.1, гр. 6–7 = 4.2 і 5.2
+  assert.match(
+    html,
+    /<tbody><tr><td>150,00<\/td><td>0,00<\/td><td>0,00<\/td><td>27,00<\/td><td>7,50<\/td><\/tr><\/tbody>/,
+  );
+  // збитковий рік з перенесеним збитком: рядок 2, від'ємний рядок 3 і збиток у 3.2
+  const loss = declaration('2025', [rows[1]], totals([rows[1]], 50, 2025));
+  assert.match(loss, /Прибутку немає, тож податок 0/);
+  assert.match(loss, /<td class="l no">3\.2<\/td><td class="l">[^<]*<\/td><td>150,00<\/td>/);
 });
 
 test('CSV: числа з крапкою, поля з комою в лапках', () => {

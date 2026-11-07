@@ -258,6 +258,119 @@ export function detail(year, rows, t) {
   return `${missingNote(rows)}<div class="card steps">${steps}</div><h2 class="section-title">Кожен продаж</h2>${rows.map(sale).join('')}`;
 }
 
+// Інструкція до декларації (наказ Мінфіну № 859), розділ IV — порядок заповнення додатка Ф1
+const F1_URL = 'https://zakon.rada.gov.ua/laws/show/z1298-15#n1693';
+
+/**
+ * Вкладка «Декларація»: додаток Ф1 і рядок 10.8 у тій структурі, що описана в Інструкції
+ * (наказ Мінфіну № 859 у редакції від 06.02.2026): розділ I — рядки 1–3.2, розділ II — рядки 4–5.2.
+ * @param {string} year
+ * @param {import('../core/fifo.js').SaleRow[]} rows
+ * @param {import('../core/tax.js').Totals} t
+ */
+export function declaration(year, rows, t) {
+  // Ф1 рахує результат «за окремими інвестиційними активами», тож групуємо продажі за тікером
+  const assets = new Map();
+  for (const r of rows.filter((x) => !x.missing)) {
+    const a = assets.get(r.symbol) ?? { symbol: r.symbol, sales: 0, income: 0, expense: 0 };
+    a.sales++;
+    a.income += r.income;
+    a.expense += r.expense;
+    assets.set(r.symbol, a);
+  }
+  const list = [...assets.values()];
+  const cents = (n) => Math.round(n * 100) / 100;
+  const net = cents(t.result - t.lossIn);
+  // Рядок форми: номер, назва, значення. IBKR не податковий агент, тож утриманих сум (4.1, 5.1) немає
+  const line = (no, label, value, cls = '') =>
+    `<tr class="${cls}"><td class="l no">${no}</td><td class="l">${label}</td><td>${value}</td></tr>`;
+  const head = (title, sub) =>
+    `<h2 class="section-title decl-title">${title}</h2>${sub ? `<p class="dim decl-sub">${sub}</p>` : ''}`;
+
+  return `
+    <div class="notice warn">
+      Структура взята з <a href="${F1_URL}" target="_blank" rel="noopener">Інструкції щодо заповнення декларації</a>
+      (наказ Мінфіну № 859, редакція від 06.02.2026). Це підказка для перенесення цифр, а не готова декларація:
+      звірте з бланком в Електронному кабінеті. Код виду активу 2 для акцій з NYSE і NASDAQ — звичайна практика,
+      але Інструкція окремо про іноземні біржі не каже, тож підтвердьте його в бухгалтера.
+    </div>
+    ${missingNote(rows)}
+
+    <div class="card decl-form">
+      <p class="decl-form-title">Додаток Ф1 до податкової декларації про майновий стан і доходи</p>
+      <p class="decl-form-name">Розрахунок податкових зобов'язань з податку на доходи фізичних осіб та військового збору
+        з доходів, отриманих від операцій з інвестиційними активами</p>
+      <p class="dim">Звітний (податковий) рік: <b>${esc(year)}</b> · РНОКПП: ваш податковий номер</p>
+    </div>
+
+    ${head('Розділ I. Розрахунок інвестиційного прибутку', 'Рядок 1 — операції за окремими інвестиційними активами')}
+    <div class="card wrap">
+      <table>
+        <thead><tr>
+          <th class="l">№ з/п<br><span class="dim">1</span></th>
+          <th>Вид активу<br><span class="dim">2</span></th>
+          <th class="l">Найменування та характеристика<br><span class="dim">3</span></th>
+          <th>Сума доходу, ₴<br><span class="dim">4</span></th>
+          <th>Сума витрат, ₴<br><span class="dim">5</span></th>
+          <th>Фінансовий результат (+/−), ₴<br><span class="dim">6</span></th>
+        </tr></thead>
+        <tbody>${list
+          .map((a, i) => {
+            const res = cents(a.income - a.expense);
+            return `<tr><td class="l">${i + 1}</td><td>2</td>
+              <td class="l">Акції <b>${esc(a.symbol)}</b> <span class="dim">· продажів: ${a.sales}</span></td>
+              <td>${fmt(a.income)}</td><td>${fmt(a.expense)}</td><td class="${sign(res)}">${fmt(res)}</td></tr>`;
+          })
+          .join('')}</tbody>
+        <tfoot><tr><td class="l" colspan="5">Усього</td><td class="${sign(t.result)}">${fmt(t.result)}</td></tr></tfoot>
+      </table>
+    </div>
+    <p class="dim decl-hint">Вид активу: 1 — корпоративні права (інші, ніж цінні папери); 2 — цінні папери чи деривативи
+      в обігу на фондовій біржі; 3 — не на фондовій біржі. Продажі згруповано за тікером; цифри по кожному продажу є
+      на вкладці «Детально» і в «Завантажити CSV».</p>
+
+    <div class="card wrap decl-lines">
+      <table><tbody>
+        ${line('2', "Від'ємне значення загального фінансового результату попереднього звітного року (переноситься з Ф1 за минулий рік)", fmt(t.lossIn))}
+        ${line('3', 'Загальний фінансовий результат (графа 6 «Усього» рядка 1 − рядок 2)', `<span class="${sign(net)}">${fmt(net)}</span>`)}
+        ${line('3.1', 'Інвестиційний прибуток (додатне значення рядка 3)', fmt(t.base), 'strong')}
+        ${line('3.2', "Інвестиційний збиток (від'ємне значення рядка 3, без знака «−»)", fmt(t.lossOut))}
+      </tbody></table>
+    </div>
+
+    ${head("Розділ II. Податкові зобов'язання з ПДФО / військового збору")}
+    <div class="card wrap decl-lines">
+      <table><tbody>
+        ${line('4', 'Податок на доходи фізичних осіб (рядок 3.1 × 18%)', fmt(t.pdfo))}
+        ${line('4.1', 'ПДФО, утриманий (сплачений) податковим агентом', fmt(0))}
+        ${line('4.2', 'ПДФО до сплати самостійно (рядок 4 − рядок 4.1)', fmt(t.pdfo), 'strong')}
+        ${line('5', `Військовий збір (рядок 3.1 × ${pct(t.milRate)})`, fmt(t.military))}
+        ${line('5.1', 'Військовий збір, утриманий (сплачений) податковим агентом', fmt(0))}
+        ${line('5.2', 'Військовий збір до сплати самостійно (рядок 5 − рядок 5.1)', fmt(t.military), 'strong')}
+      </tbody></table>
+    </div>
+    <p class="dim decl-hint">Іноземний брокер не є податковим агентом в Україні, тож у рядках 4.1 і 5.1 — нуль.</p>
+
+    ${head('Декларація · Розділ II, рядок 10.8', 'Інвестиційний прибуток, отриманий від операцій з цінними паперами, деривативами та корпоративними правами')}
+    <div class="card wrap">
+      <table>
+        <thead><tr>
+          <th>Сума доходу<br><span class="dim">гр. 3 = Ф1 р. 3.1</span></th>
+          <th>ПДФО утримано агентом<br><span class="dim">гр. 4 = Ф1 р. 4.1</span></th>
+          <th>ВЗ утримано агентом<br><span class="dim">гр. 5 = Ф1 р. 5.1</span></th>
+          <th>ПДФО до сплати<br><span class="dim">гр. 6 = Ф1 р. 4.2</span></th>
+          <th>ВЗ до сплати<br><span class="dim">гр. 7 = Ф1 р. 5.2</span></th>
+        </tr></thead>
+        <tbody><tr><td>${fmt(t.base)}</td><td>${fmt(0)}</td><td>${fmt(0)}</td><td>${fmt(t.pdfo)}</td><td>${fmt(t.military)}</td></tr></tbody>
+      </table>
+    </div>
+    <p class="dim decl-hint">${
+      t.base
+        ? `До сплати ${uah(t.pdfo + t.military)}: декларацію подати до 1 травня, сплатити до 1 серпня року, що настає за звітним. ${ref('deadline', 'пп. 49.18.4')} ${ref('payment', 'п. 179.7')}`
+        : `Прибутку немає, тож податок 0. Ф1 однаково подається: рядок 3.2 фіксує збиток, який наступного року переходить у рядок 2. ${ref('yearTotal')}`
+    }</p>`;
+}
+
 // Поле CSV у лапках, якщо в ньому є кома, лапки чи перенос рядка
 const cell = (v) => (/[",\n]/.test(String(v)) ? `"${String(v).replaceAll('"', '""')}"` : String(v));
 

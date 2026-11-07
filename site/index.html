@@ -46,6 +46,9 @@
         <button role="tab" id="t-detail" aria-controls="tab-detail" aria-selected="false" tabindex="-1">
           Детально
         </button>
+        <button role="tab" id="t-decl" aria-controls="tab-decl" aria-selected="false" tabindex="-1">
+          Декларація (Ф1)
+        </button>
         <button role="tab" id="t-law" aria-controls="tab-law" aria-selected="false" tabindex="-1">
           Як рахується (ПКУ)
         </button>
@@ -110,6 +113,17 @@
             <button class="btn" id="print" type="button">Друк / PDF</button>
           </div>
           <div id="detail"></div>
+        </div>
+      </section>
+
+      <section id="tab-decl" role="tabpanel" aria-labelledby="t-decl" hidden>
+        <p class="empty" id="declEmpty">Спершу завантажте виписки на вкладці <a href="#tab-calc">«Розрахунок»</a>.</p>
+        <div id="declBody" hidden>
+          <div class="toolbar">
+            <h2>Звітний рік</h2>
+            <select class="year" aria-label="Звітний рік"></select>
+          </div>
+          <div id="decl"></div>
         </div>
       </section>
 

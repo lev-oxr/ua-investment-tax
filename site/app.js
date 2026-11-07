@@ -92,8 +92,10 @@ async function load(files) {
     }
     $('loading').hidden = true;
     $('result').hidden = false;
-    $('detailEmpty').hidden = true;
-    $('detailBody').hidden = false;
+    for (const id of ['detail', 'decl']) {
+      $(`${id}Empty`).hidden = true;
+      $(`${id}Body`).hidden = false;
+    }
     render();
   } catch (e) {
     $('report').hidden = true;
@@ -112,6 +114,7 @@ function render() {
   const summary = yearly(rows, { carryLoss: $('carry').checked });
   $('result').innerHTML = ui.result(year, yearRows(year), summary[year]);
   $('detail').innerHTML = ui.detail(year, yearRows(year), summary[year]);
+  $('decl').innerHTML = ui.declaration(year, yearRows(year), summary[year]);
 }
 
 $('carry').addEventListener('change', render);

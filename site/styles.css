@@ -528,6 +528,47 @@ td.lots-col {
   border-top: 1px solid var(--line);
   font-weight: 600;
 }
+.decl-title {
+  margin: 24px 0 4px;
+}
+.decl-sub {
+  margin: 0 0 10px;
+}
+.decl-hint {
+  margin: 8px 0 0;
+}
+.decl-form {
+  padding: 14px 18px;
+  margin-top: 16px;
+}
+.decl-form p {
+  margin: 2px 0;
+}
+.decl-form-title {
+  font-weight: 700;
+}
+.decl-lines {
+  margin-top: 12px;
+}
+.decl-lines td:last-child {
+  width: 160px;
+}
+.decl-lines td.no {
+  width: 48px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.decl-lines td.l {
+  white-space: normal;
+}
+.decl-lines tr.strong td {
+  font-weight: 700;
+}
+th .dim {
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 400;
+}
 .empty {
   color: var(--muted);
   padding: 32px 0;
