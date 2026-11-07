@@ -12,7 +12,13 @@ import { uah } from '../site/ui/render.js';
 const SITE = resolve('site');
 const SAMPLE = join(SITE, 'sample.csv');
 const RATE = 40;
-const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.csv': 'text/csv' };
+const TYPES = {
+  '.html': 'text/html',
+  '.js': 'text/javascript',
+  '.css': 'text/css',
+  '.csv': 'text/csv',
+  '.svg': 'image/svg+xml',
+};
 
 const rows = fifo(parseFile(await readFile(SAMPLE, 'utf8')).trades, (c) => (c === 'UAH' ? 1 : RATE));
 const summary = yearly(rows);

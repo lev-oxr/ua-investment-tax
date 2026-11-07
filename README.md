@@ -39,7 +39,7 @@
 | Правило 30 днів    | лише попередження: для угод на фондовій біржі воно не діє                           | [пп. 170.2.4](https://zakon.rada.gov.ua/laws/show/2755-17#n3998), [пп. 170.2.6](https://zakon.rada.gov.ua/laws/show/2755-17#n4017)                 |
 
 Гривневі суми округлюються до копійок на кожному кроці, тож показана арифметика завжди сходиться.
-Посилання ведуть на ПКУ в редакції від 27.10.2026 (перевірено 31.10.2026).
+Посилання ведуть на ПКУ в редакції від 01.11.2026 (перевірено 07.11.2026).
 
 ## Як отримати виписку з IBKR
 
@@ -62,9 +62,11 @@
 Без фреймворків і збирання: ES-модулі, які браузер і Node читають напряму. Потрібен Node.js 22+.
 
 ```bash
-npm ci          # ESLint і Prettier
-npm start       # http://localhost:8765
-npm test        # node:test
+npm ci              # ESLint, Prettier і TypeScript (лише для перевірки типів)
+npm start           # http://localhost:8765
+npm test            # node:test
+npm run typecheck   # типи за JSDoc, без збирання
+npm run smoke       # сторінка в headless Chrome: сума, вкладки, 375 px, CSP
 npm run lint && npm run format:check
 ```
 
@@ -75,6 +77,7 @@ site/            # публікується на GitHub Pages
   nbu.js         # курси НБУ
   app.js         # стан сторінки й події
 test/            # тести й синтетичні фікстури
+scripts/         # smoke-тест через Chrome DevTools Protocol, без залежностей
 docs/            # скриншот для README
 ```
 
