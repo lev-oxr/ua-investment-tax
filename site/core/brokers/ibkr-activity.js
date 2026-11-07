@@ -1,25 +1,55 @@
 import { splitCsvLine, parseNumber, parseDateTime, isValidTrade } from '../csv.js';
+import { parseSplit, cashSymbol } from './corporate.js';
 
 /**
- * Розділ Trades з IBKR Activity Statement. Колонки беремо з кожного рядка Header: у різних класів активів вони різні.
+ * IBKR Activity Statement: розділи Trades, Dividends, Withholding Tax і Corporate Actions.
+ * Колонки беремо з кожного рядка Header: у різних розділах і класах активів вони різні.
  * @param {string} text
- * @returns {{ trades: import('../csv.js').Trade[], warnings: string[] }}
+ * @returns {import('./index.js').Parsed}
  */
 export function parseIbkrActivity(text) {
   const trades = [];
+  const cash = [];
+  const splits = [];
   const skipped = {};
-  let col = null;
+  const cols = {};
   let corporate = 0;
   for (const line of text.split(/\r?\n/)) {
-    if (line.startsWith('Corporate Actions,Data,')) corporate++;
-    if (!line.startsWith('Trades,')) continue;
     const f = splitCsvLine(line);
+    const section = f[0];
     if (f[1] === 'Header') {
-      col = Object.fromEntries(f.map((name, i) => [name, i]));
+      cols[section] = Object.fromEntries(f.map((name, i) => [name, i]));
       continue;
     }
+    const col = cols[section];
     if (f[1] !== 'Data' || !col) continue;
     const get = (name) => f[col[name]] ?? '';
+
+    if (section === 'Dividends' || section === 'Withholding Tax') {
+      // Рядки Total мають у полі Currency «Total…» і порожню дату
+      const [date] = parseDateTime(get('Date'));
+      if (!date || !/^[A-Z]{3}$/.test(get('Currency'))) continue;
+      const description = get('Description');
+      cash.push({
+        date,
+        symbol: cashSymbol(description),
+        currency: get('Currency'),
+        amount: parseNumber(get('Amount')),
+        type: section === 'Withholding Tax' ? 'WHT' : /in lieu/i.test(description) ? 'LIEU' : 'DIV',
+      });
+      continue;
+    }
+
+    if (section === 'Corporate Actions') {
+      if (get('Asset Category') && get('Asset Category') !== 'Stocks') continue;
+      const [date, time] = parseDateTime(get('Date/Time'));
+      const split = date && parseSplit(get('Description'), date, time);
+      if (split) splits.push(split);
+      else if (date) corporate++;
+      continue;
+    }
+
+    if (section !== 'Trades') continue;
     // ClosedLot і Execution — деталізація ордера, який уже є окремим рядком
     if (!['Order', 'Trade', ''].includes(get('DataDiscriminator'))) continue;
     const cat = get('Asset Category');
@@ -45,6 +75,8 @@ export function parseIbkrActivity(text) {
   const warnings = Object.entries(skipped).map(
     ([cat, n]) => `Пропущено угод категорії «${cat}»: ${n}. Інструмент рахує лише Stocks.`,
   );
-  if (corporate) warnings.push(`У виписці є корпоративні дії (${corporate}): спліти, злиття тощо не враховано.`);
-  return { trades, warnings };
+  if (corporate) {
+    warnings.push(`У виписці є корпоративні дії, крім сплітів (${corporate}): злиття, виділення тощо не враховано.`);
+  }
+  return { trades, cash, splits, warnings };
 }

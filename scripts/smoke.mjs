@@ -1,41 +1,23 @@
 import { spawn } from 'node:child_process';
-import { createServer } from 'node:http';
 import { readFile, mkdtemp, rm } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join, extname, resolve } from 'node:path';
+import { join } from 'node:path';
+import { serve, SITE } from './serve.mjs';
 import { parseFile } from '../site/core/brokers/index.js';
 import { fifo } from '../site/core/fifo.js';
 import { yearly } from '../site/core/tax.js';
 import { uah } from '../site/ui/render.js';
 
-const SITE = resolve('site');
 const SAMPLE = join(SITE, 'sample.csv');
 const RATE = 40;
-const TYPES = {
-  '.html': 'text/html',
-  '.js': 'text/javascript',
-  '.css': 'text/css',
-  '.csv': 'text/csv',
-  '.svg': 'image/svg+xml',
-};
 
 const rows = fifo(parseFile(await readFile(SAMPLE, 'utf8')).trades, (c) => (c === 'UAH' ? 1 : RATE));
 const summary = yearly(rows);
 const year = Object.keys(summary).at(-1);
 const expected = uah(summary[year].pdfo + summary[year].military);
 
-const server = createServer(async (req, res) => {
-  const path = join(SITE, decodeURIComponent(new URL(req.url, 'http://x').pathname).replace(/\/$/, '/index.html'));
-  if (!path.startsWith(SITE)) return res.writeHead(403).end();
-  try {
-    const body = await readFile(path);
-    res.writeHead(200, { 'content-type': TYPES[extname(path)] ?? 'application/octet-stream' }).end(body);
-  } catch {
-    res.writeHead(404).end();
-  }
-});
-await new Promise((r) => server.listen(0, '127.0.0.1', r));
+const server = await serve(0);
 const url = `http://127.0.0.1:${server.address().port}/`;
 
 const chromePath =
@@ -147,6 +129,8 @@ try {
   })()`);
   check(tabs.focused === 't-detail' && tabs.detailShown, 'стрілка вправо відкриває вкладку «Детально»');
   check(tabs.sales === rows.filter((r) => r.date.startsWith(year)).length, `карток продажів: ${tabs.sales}`);
+  const bars = await evaluate(`document.querySelectorAll('#analytics .bar').length`);
+  check(bars > 0, `вкладка «Аналітика» з графіками (смуг: ${bars})`);
 
   await send('Emulation.setDeviceMetricsOverride', { width: 375, height: 800, deviceScaleFactor: 1, mobile: true });
   const overflow = await evaluate(`(async () => {

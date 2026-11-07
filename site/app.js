@@ -1,14 +1,23 @@
 import { parseFile, mergeFiles } from './core/brokers/index.js';
 import { fifo } from './core/fifo.js';
 import { markWash } from './core/wash.js';
-import { yearly } from './core/tax.js';
+import { yearly, totals } from './core/tax.js';
+import { dividendRows, dividendTotals } from './core/dividends.js';
 import { lawUrl } from './core/law.js';
 import { getRates } from './nbu.js';
 import * as ui from './ui/render.js';
+import { roundtrips } from './core/analytics/roundtrips.js';
+import { metrics } from './core/analytics/metrics.js';
+import { behavior } from './core/analytics/behavior.js';
+import { parsePrices, benchmark } from './core/analytics/benchmark.js';
+import * as an from './ui/analytics.js';
 
 const $ = (id) => document.getElementById(id);
 const yearSelects = [...document.querySelectorAll('select.year')];
 let rows = [];
+let divs = [];
+let trips = [];
+let prices = null;
 
 for (const a of document.querySelectorAll('a[data-law]')) {
   a.href = lawUrl(a.dataset.law);
@@ -64,7 +73,7 @@ async function load(files) {
         }
       }),
     );
-    const { trades, warnings } = mergeFiles(parsed);
+    const { trades, cash, warnings } = mergeFiles(parsed);
     $('files').innerHTML = ui.files(parsed);
     notice('warn', warnings);
     if (!trades.length) throw new Error('У файлах не знайдено жодної угоди з акціями.');
@@ -72,7 +81,7 @@ async function load(files) {
     $('report').hidden = false;
     $('loading').hidden = false;
     $('result').hidden = true;
-    const rate = await getRates(trades, {
+    const rate = await getRates([...trades, ...cash], {
       onProgress: (i, n) => {
         $('bar').max = n;
         $('bar').value = i;
@@ -81,8 +90,9 @@ async function load(files) {
     });
     // Якщо бракує ранніх купівель, решту все одно рахуємо, а такі продажі позначаємо на сторінці
     rows = markWash(fifo(trades, rate, { allowMissing: true }), trades);
-    const years = Object.keys(yearly(rows)).reverse();
-    if (!years.length) throw new Error('У файлах є лише купівлі, продажів немає — оподатковувати нічого.');
+    divs = dividendRows(cash, rate);
+    const years = [...new Set([...Object.keys(yearly(rows)), ...divs.map((d) => d.date.slice(0, 4))])].sort().reverse();
+    if (!years.length) throw new Error('У файлах є лише купівлі, продажів і дивідендів немає — оподатковувати нічого.');
 
     const last = String(new Date().getFullYear() - 1);
     const pick = years.includes(last) ? last : years[0];
@@ -92,11 +102,13 @@ async function load(files) {
     }
     $('loading').hidden = true;
     $('result').hidden = false;
-    for (const id of ['detail', 'decl']) {
+    for (const id of ['detail', 'decl', 'an']) {
       $(`${id}Empty`).hidden = true;
       $(`${id}Body`).hidden = false;
     }
     render();
+    trips = roundtrips(rows);
+    renderAnalytics();
   } catch (e) {
     $('report').hidden = true;
     notice('err', [e.message]);
@@ -108,16 +120,38 @@ const yearRows = (year) => rows.filter((r) => r.date.startsWith(year));
 function render() {
   const year = yearSelects[0].value;
   // Перемикач має сенс лише там, де є що переносити; сума показує, скільки саме віднімається
-  const prior = yearly(rows)[year].lossIn;
+  const prior = yearly(rows)[year]?.lossIn ?? 0;
   $('carryBox').hidden = !prior;
   $('carryAmount').textContent = ui.uah(prior);
-  const summary = yearly(rows, { carryLoss: $('carry').checked });
-  $('result').innerHTML = ui.result(year, yearRows(year), summary[year]);
-  $('detail').innerHTML = ui.detail(year, yearRows(year), summary[year]);
-  $('decl').innerHTML = ui.declaration(year, yearRows(year), summary[year]);
+  // ponytail: рік лише з дивідендами показує продажі нулями, без збитку минулих років у рядку 2 Ф1
+  const t = yearly(rows, { carryLoss: $('carry').checked })[year] ?? totals([], 0, year);
+  const yearDivs = divs.filter((d) => d.date.startsWith(year));
+  const d = dividendTotals(yearDivs, year);
+  $('result').innerHTML = ui.result(year, yearRows(year), t, d) + ui.dividends(yearDivs, d);
+  $('detail').innerHTML = ui.detail(year, yearRows(year), t);
+  $('decl').innerHTML = ui.declaration(year, yearRows(year), t, d);
 }
 
 $('carry').addEventListener('change', render);
+
+function renderAnalytics() {
+  $('analytics').innerHTML = an.summary(metrics(trips), behavior(trips));
+  $('bench').innerHTML = prices ? an.bench(benchmark(trips, prices)) : '';
+}
+
+$('benchFile').addEventListener('change', async (e) => {
+  const [f] = e.target.files;
+  e.target.value = '';
+  if (!f) return;
+  notice('benchErr', []);
+  try {
+    prices = parsePrices(await f.text());
+  } catch (err) {
+    prices = null;
+    notice('benchErr', [`${f.name}: ${err.message}`]);
+  }
+  renderAnalytics();
+});
 
 for (const s of yearSelects) {
   s.addEventListener('change', () => {

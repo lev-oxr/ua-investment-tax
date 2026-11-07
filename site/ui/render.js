@@ -14,9 +14,9 @@ export const qty = (n) => num(n, 0, 8);
 const cur = (n, c) => `${num(n, 2, 4)} ${esc(c)}`;
 const cents = (n, c) => `${fmt(n)} ${esc(c)}`;
 const pct = (r) => `${(r * 100).toLocaleString('uk-UA')}%`;
-const sign = (n) => (n < 0 ? 'neg' : n > 0 ? 'pos' : '');
+export const sign = (n) => (n < 0 ? 'neg' : n > 0 ? 'pos' : '');
 // Дата з виписки (РРРР-ММ-ДД) у звичному вигляді: 2025-03-10 → 10.03.2025
-const day = (d) => esc(String(d).split('-').reverse().join('.'));
+export const day = (d) => esc(String(d).split('-').reverse().join('.'));
 
 /** @param {keyof typeof LAW} key @param {string} [label] */
 export const ref = (key, label = LAW[key].label) =>
@@ -35,7 +35,7 @@ export const notice = (items) =>
 export const files = (parsed) =>
   parsed.map((p) => `<li><b>${esc(p.name)}</b> · угод: ${p.trades.length}</li>`).join('');
 
-const stat = (label, value, small = '', cls = '') =>
+export const stat = (label, value, small = '', cls = '') =>
   `<div class="stat card ${cls}"><span>${label}</span><b>${value}</b><small>${small}</small></div>`;
 
 // Продажі, для яких у виписках не знайшлось частини купівель: їх видно, але в підсумок вони не йдуть
@@ -59,8 +59,10 @@ const missingNote = (rows) => {
  * @param {string} year
  * @param {(import('../core/fifo.js').SaleRow & { wash: { date: string, exchange: string }[] })[]} rows
  * @param {import('../core/tax.js').Totals} t
+ * @param {import('../core/dividends.js').DividendTotals} [d] дивіденди року: входять у «Разом до сплати»
  */
-export function result(year, rows, t) {
+export function result(year, rows, t, d) {
+  const divTax = d ? d.pdfo + d.military : 0;
   const wash = rows.filter((r) => r.wash.length);
   const anyVenue = wash.some((r) => venues(r).some(Boolean));
   const washNote = !wash.length
@@ -85,6 +87,7 @@ export function result(year, rows, t) {
   const totalNote = [
     incomplete ? `Неповно: не пораховано продажів — ${incomplete}` : '',
     t.lossOut ? `Збиток ${uah(t.lossOut)} переходить на наступні роки` : '',
+    divTax ? `З них дивіденди ${uah(divTax)} — <a href="#dividends">нижче</a>` : '',
   ]
     .filter(Boolean)
     .join('<br>');
@@ -101,7 +104,7 @@ export function result(year, rows, t) {
       )}
       ${stat('ПДФО 18%', uah(t.pdfo))}
       ${stat(`Військовий збір ${pct(t.milRate)}`, uah(t.military))}
-      ${stat('Разом до сплати', uah(t.pdfo + t.military), totalNote, 'total')}
+      ${stat('Разом до сплати', uah(t.pdfo + t.military + divTax), totalNote, 'total')}
     </div>
     ${
       year === '2024'
@@ -259,7 +262,8 @@ export function detail(year, rows, t) {
 }
 
 // Інструкція до декларації (наказ Мінфіну № 859), розділ IV — порядок заповнення додатка Ф1
-const F1_URL = 'https://zakon.rada.gov.ua/laws/show/z1298-15#n1693';
+const DECL_URL = 'https://zakon.rada.gov.ua/laws/show/z1298-15#';
+const F1_URL = `${DECL_URL}n1693`;
 
 /**
  * Вкладка «Декларація»: додаток Ф1 і рядок 10.8 у тій структурі, що описана в Інструкції
@@ -267,8 +271,9 @@ const F1_URL = 'https://zakon.rada.gov.ua/laws/show/z1298-15#n1693';
  * @param {string} year
  * @param {import('../core/fifo.js').SaleRow[]} rows
  * @param {import('../core/tax.js').Totals} t
+ * @param {import('../core/dividends.js').DividendTotals} [d]
  */
-export function declaration(year, rows, t) {
+export function declaration(year, rows, t, d) {
   // Ф1 рахує результат «за окремими інвестиційними активами», тож групуємо продажі за тікером
   const assets = new Map();
   for (const r of rows.filter((x) => !x.missing)) {
@@ -368,7 +373,64 @@ export function declaration(year, rows, t) {
       t.base
         ? `До сплати ${uah(t.pdfo + t.military)}: декларацію подати до 1 травня, сплатити до 1 серпня року, що настає за звітним. ${ref('deadline', 'пп. 49.18.4')} ${ref('payment', 'п. 179.7')}`
         : `Прибутку немає, тож податок 0. Ф1 однаково подається: рядок 3.2 фіксує збиток, який наступного року переходить у рядок 2. ${ref('yearTotal')}`
-    }</p>`;
+    }</p>
+    ${
+      d?.income
+        ? `${head('Декларація · Розділ II, рядок 10.10', 'Іноземні доходи: дивіденди й виплати замість дивідендів')}
+    <div class="card wrap">
+      <table>
+        <thead><tr>
+          <th>Сума доходу, ₴<br><span class="dim">гр. 3</span></th>
+          <th>ПДФО<br><span class="dim">гр. 6</span></th>
+          <th>Військовий збір<br><span class="dim">гр. 7</span></th>
+        </tr></thead>
+        <tbody><tr><td>${fmt(d.income)}</td><td>${fmt(d.pdfo)}</td><td>${fmt(d.military)}</td></tr></tbody>
+      </table>
+    </div>
+    <p class="dim decl-hint">
+      <a href="${DECL_URL}n1615" target="_blank" rel="noopener">Інструкція, рядок 10.10</a>: гривні за курсом НБУ на дату
+      виплати ${ref('fxIncome')}. ПДФО — 9% з дивідендів ${ref('foreign')} ${ref('divRate')} і 18% з виплат замість
+      дивідендів: це дохід від брокера, а не дивіденд емітента, тож звірте ставку з бухгалтером.
+      Податок, утриманий у США (${uah(d.withheldUah)}), можна зарахувати в
+      <a href="${DECL_URL}n1656" target="_blank" rel="noopener">рядку 18</a> лише з документом податкового органу США
+      за ст. 13 ПКУ ${ref('foreignCredit')}. Інструмент його не віднімає.
+    </p>`
+        : ''
+    }`;
+}
+
+/**
+ * Блок дивідендів року на вкладці «Розрахунок».
+ * @param {import('../core/dividends.js').DividendRow[]} rows дивіденди одного року
+ * @param {import('../core/dividends.js').DividendTotals} d
+ */
+export function dividends(rows, d) {
+  if (!rows.length) return '';
+  return `
+    <h2 class="section-title" id="dividends">Дивіденди</h2>
+    <div class="stats">
+      ${stat('Дивіденди', uah(d.income), 'Іноземні доходи, рядок 10.10 декларації')}
+      ${stat('ПДФО', uah(d.pdfo), `9% з дивідендів ${ref('divRate')}, 18% з виплат замість дивідендів`)}
+      ${stat(`Військовий збір ${pct(d.milRate)}`, uah(d.military))}
+      ${stat('Утримано в США', uah(d.withheldUah), `Не віднімається від податку: залік лише з документами іноземного органу ${ref('foreignCredit')}`)}
+    </div>
+    <div class="card wrap">
+      <table>
+        <thead><tr>
+          <th class="l">Дата</th><th class="l">Тікер</th><th>Сума</th><th>Утримано</th><th>Курс НБУ</th><th>Дохід, ₴</th>
+        </tr></thead>
+        <tbody>${rows
+          .map(
+            (r) => `<tr>
+              <td class="l">${day(r.date)}</td>
+              <td class="l sym">${esc(r.symbol)}${r.type === 'LIEU' ? '<span class="tag" title="Акції були позичені: брокер заплатив замість дивіденду. Це не дивіденд емітента, тож ставка 18%">замість дивіденду</span>' : ''}</td>
+              <td>${cents(r.gross, r.currency)}</td><td>${r.withheld ? cents(r.withheld, r.currency) : '—'}</td>
+              <td>${rate4(r.rate)}</td><td class="${sign(r.income)}">${fmt(r.income)}</td>
+            </tr>`,
+          )
+          .join('')}</tbody>
+      </table>
+    </div>`;
 }
 
 // Поле CSV у лапках, якщо в ньому є кома, лапки чи перенос рядка

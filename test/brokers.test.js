@@ -5,8 +5,15 @@ import { parseFile } from '../site/core/brokers/index.js';
 
 const fixture = (name) => readFileSync(new URL(`./fixtures/${name}`, import.meta.url), 'utf8');
 
-test('Activity: ордери акцій без ClosedLot і підсумків, Forex і корпоративні дії — у попередженнях', () => {
-  const { format, trades, warnings } = parseFile(fixture('ibkr-activity.csv'));
+test('Activity: ордери акцій без ClosedLot і підсумків, Forex і злиття — у попередженнях', () => {
+  const { format, trades, cash, splits, warnings } = parseFile(fixture('ibkr-activity.csv'));
+  assert.deepEqual(splits, [{ symbol: 'XYZ', date: '2025-06-09', time: '20:25:00', ratio: 2 }]);
+  // рядки Total пропущено, Payment in Lieu відокремлено від дивіденду
+  assert.deepEqual(cash, [
+    { date: '2025-03-13', symbol: 'MSFT', currency: 'USD', amount: 830, type: 'DIV' },
+    { date: '2025-06-12', symbol: 'MSFT', currency: 'USD', amount: 8.3, type: 'LIEU' },
+    { date: '2025-03-13', symbol: 'MSFT', currency: 'USD', amount: -124.5, type: 'WHT' },
+  ]);
   assert.equal(format, 'ibkr-activity');
   assert.deepEqual(trades, [
     {
@@ -32,7 +39,7 @@ test('Activity: ордери акцій без ClosedLot і підсумків, 
   ]);
   assert.equal(warnings.length, 2);
   assert.match(warnings[0], /Forex.*1/);
-  assert.match(warnings[1], /корпоративні дії \(1\)/);
+  assert.match(warnings[1], /крім сплітів \(1\)/);
 });
 
 test('Flex: береться EXECUTION, а не ORDER; опціон і валюта — у попередженнях', () => {
@@ -90,4 +97,14 @@ test('власний CSV: кривий рядок — помилка з номе
 
 test('власний CSV: немає обов’язкових колонок — перелік у помилці', () => {
   assert.throws(() => parseFile('date,symbol,qty\n2025-01-10,AAPL,1'), /немає колонок type, price, currency/);
+});
+
+test('Flex без кодів розділів: дивіденди, податок і спліт з окремих розділів; інший рух грошей пропускається', () => {
+  const { trades, cash, splits } = parseFile(fixture('ibkr-flex-cash.csv'));
+  assert.equal(trades.length, 2);
+  assert.deepEqual(cash, [
+    { date: '2024-03-27', symbol: 'NVDA', currency: 'USD', amount: 0.08, type: 'DIV' },
+    { date: '2024-03-27', symbol: 'NVDA', currency: 'USD', amount: -0.01, type: 'WHT' },
+  ]);
+  assert.deepEqual(splits, [{ symbol: 'NVDA', date: '2024-06-07', time: '20:25:00', ratio: 10 }]);
 });

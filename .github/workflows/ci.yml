@@ -18,6 +18,10 @@ jobs:
         with:
           node-version: 24
           cache: npm
+      # Справжні виписки не мають потрапити в репозиторій: шукаємо номери рахунків IBKR (U1234567, DU1234567).
+      # Фікстури використовують U0000000, тож номер з першою цифрою 0 дозволено
+      - name: No IBKR account numbers
+        run: "! git grep -nE '\\bD?U[1-9][0-9]{6,7}\\b'"
       - run: npm ci
       - run: npm run lint
       - run: npm run format:check

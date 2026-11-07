@@ -6,7 +6,7 @@
     "node": ">=22"
   },
   "scripts": {
-    "start": "python3 -m http.server 8765 -d site",
+    "start": "node scripts/serve.mjs",
     "test": "node --test",
     "test:coverage": "node --test --experimental-test-coverage",
     "lint": "eslint .",

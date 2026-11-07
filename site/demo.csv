@@ -1,0 +1,217 @@
+Statement,Header,Field Name,Field Value
+Statement,Data,Title,Activity Statement
+Statement,Data,Period,"January 6, 2025 - October 30, 2026"
+Trades,Header,DataDiscriminator,Asset Category,Currency,Symbol,Date/Time,Quantity,T. Price,C. Price,Proceeds,Comm/Fee,Basis,Realized P/L,MTM P/L,Code
+Trades,Data,Order,Stocks,USD,DDD,"2025-01-13, 13:35:43",6,59.03,59.03,-354.20,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,CCC,"2025-01-22, 11:49:52",10,414.52,414.52,-4145.24,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,BBB,"2025-01-27, 12:36:40",16,99.21,99.21,-1587.36,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,CCC,"2025-01-31, 10:49:23",18,417.23,417.23,-7510.16,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,DDD,"2025-02-03, 11:44:40",9,69.29,69.29,-623.58,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,DDD,"2025-02-07, 09:41:45",-9,75.55,75.55,679.98,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,EEE,"2025-02-07, 11:40:37",6,247.68,247.68,-1486.05,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,FFF,"2025-02-07, 14:49:21",5,38.35,38.35,-191.77,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,DDD,"2025-02-10, 13:38:49",-6,69.53,69.53,417.16,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,EEE,"2025-02-12, 10:47:01",-6,233.96,233.96,1403.75,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,CCC,"2025-02-17, 09:30:40",20,400.09,400.09,-8001.84,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,BBB,"2025-02-17, 09:56:39",18,76.29,76.29,-1373.13,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,AAA,"2025-02-17, 10:52:33",15,166.24,166.24,-2493.59,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,BBB,"2025-02-17, 12:52:52",13,106.54,106.54,-1385.04,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,FFF,"2025-02-19, 11:42:27",-5,41.43,41.43,207.14,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,BBB,"2025-02-21, 09:32:59",-13,96.22,96.22,1250.84,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,EEE,"2025-03-07, 11:51:11",20,200.44,200.44,-4008.83,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,DDD,"2025-03-07, 12:50:54",19,66.08,66.08,-1255.55,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,DDD,"2025-03-10, 10:38:39",-19,64.90,64.90,1233.14,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,CCC,"2025-03-17, 09:51:40",19,482.44,482.44,-9166.42,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,EEE,"2025-03-17, 10:38:04",-20,228.13,228.13,4562.68,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,AAA,"2025-03-17, 13:46:25",12,195.40,195.40,-2344.81,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,CCC,"2025-03-18, 10:33:42",-10,450.56,450.56,4505.63,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,CCC,"2025-03-18, 11:57:17",-19,485.43,485.43,9223.21,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,FFF,"2025-03-24, 13:53:49",7,28.79,28.79,-201.50,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,CCC,"2025-04-03, 11:50:01",-18,428.60,428.60,7714.73,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,FFF,"2025-04-08, 12:49:58",-7,30.59,30.59,214.16,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,AAA,"2025-04-08, 14:43:12",-15,160.15,160.15,2402.25,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,FFF,"2025-04-09, 10:36:31",10,27.62,27.62,-276.19,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,FFF,"2025-04-11, 09:48:20",-10,32.15,32.15,321.49,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,EEE,"2025-04-21, 10:35:45",20,231.17,231.17,-4623.47,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,DDD,"2025-04-28, 09:49:09",12,57.56,57.56,-690.76,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,DDD,"2025-04-28, 14:32:19",20,61.25,61.25,-1224.91,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,BBB,"2025-05-05, 09:42:06",21,80.10,80.10,-1682.04,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,DDD,"2025-05-05, 12:48:52",8,62.42,62.42,-499.33,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,CCC,"2025-05-08, 10:38:55",16,367.82,367.82,-5885.09,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,DDD,"2025-05-12, 13:48:41",-12,50.71,50.71,608.55,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,CCC,"2025-05-15, 09:33:48",3,382.43,382.43,-1147.28,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,BBB,"2025-05-15, 10:51:53",-18,69.49,69.49,1250.83,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,EEE,"2025-05-15, 12:51:59",17,220.33,220.33,-3745.58,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,CCC,"2025-05-19, 12:38:13",-16,341.06,341.06,5457.02,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,CCC,"2025-05-19, 13:30:55",14,422.34,422.34,-5912.76,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,CCC,"2025-05-22, 12:48:03",-3,394.26,394.26,1182.77,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,EEE,"2025-06-02, 12:40:16",10,246.10,246.10,-2461.02,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,BBB,"2025-06-02, 14:42:39",12,112.44,112.44,-1349.26,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,DDD,"2025-06-05, 09:31:49",11,51.21,51.21,-563.36,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,AAA,"2025-06-09, 13:51:28",7,152.29,152.29,-1066.03,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,BBB,"2025-06-09, 14:38:01",19,78.54,78.54,-1492.23,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,CCC,"2025-06-11, 09:31:34",-14,444.85,444.85,6227.88,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,AAA,"2025-06-16, 10:55:37",21,193.95,193.95,-4072.90,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,BBB,"2025-06-16, 12:36:24",-12,108.64,108.64,1303.69,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,BBB,"2025-06-23, 10:45:11",-16,99.44,99.44,1590.98,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,CCC,"2025-06-24, 09:56:49",7,452.16,452.16,-3165.12,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,AAA,"2025-06-30, 10:46:51",6,159.78,159.78,-958.66,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,AAA,"2025-07-01, 10:58:00",-7,147.93,147.93,1035.48,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,AAA,"2025-07-02, 11:34:19",6,173.66,173.66,-1041.94,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,AAA,"2025-07-07, 10:43:07",-12,198.27,198.27,2379.20,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,CCC,"2025-07-10, 14:31:58",4,440.93,440.93,-1763.70,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,EEE,"2025-07-11, 09:48:19",-20,220.26,220.26,4405.20,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,AAA,"2025-07-14, 14:55:12",6,184.04,184.04,-1104.24,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,CCC,"2025-07-16, 12:34:03",-20,459.00,459.00,9180.07,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,AAA,"2025-07-16, 13:41:33",19,173.66,173.66,-3299.53,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,FFF,"2025-07-17, 13:31:11",15,27.25,27.25,-408.76,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,AAA,"2025-07-23, 11:55:52",11,184.13,184.13,-2025.47,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,EEE,"2025-07-25, 09:31:42",-10,271.13,271.13,2711.31,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,EEE,"2025-07-30, 11:33:46",12,256.66,256.66,-3079.96,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,AAA,"2025-07-30, 12:47:00",20,169.74,169.74,-3394.88,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,DDD,"2025-08-11, 11:56:17",21,50.97,50.97,-1070.40,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,FFF,"2025-08-11, 12:52:24",19,39.59,39.59,-752.24,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,DDD,"2025-08-12, 09:30:32",-11,59.17,59.17,650.92,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,EEE,"2025-08-12, 13:32:46",10,278.68,278.68,-2786.77,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,BBB,"2025-08-13, 09:38:01",8,94.78,94.78,-758.27,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,AAA,"2025-08-15, 10:32:27",-6,170.73,170.73,1024.37,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,FFF,"2025-08-18, 09:45:48",-19,36.06,36.06,685.17,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,DDD,"2025-08-18, 10:57:47",3,56.64,56.64,-169.93,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,DDD,"2025-08-20, 10:33:12",-3,51.26,51.26,153.77,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,AAA,"2025-08-20, 11:38:55",-20,173.07,173.07,3461.37,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,BBB,"2025-08-22, 10:48:19",-21,72.37,72.37,1519.79,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,FFF,"2025-08-25, 12:53:46",-15,27.91,27.91,418.71,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,EEE,"2025-09-03, 11:32:14",7,213.13,213.13,-1491.90,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,CCC,"2025-09-04, 09:30:18",-4,508.44,508.44,2033.76,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,FFF,"2025-09-05, 12:54:49",11,31.29,31.29,-344.16,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,AAA,"2025-09-08, 12:43:33",17,194.38,194.38,-3304.43,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,DDD,"2025-09-09, 13:39:46",-8,62.77,62.77,502.18,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,DDD,"2025-09-15, 12:31:47",-20,67.07,67.07,1341.34,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,FFF,"2025-09-15, 14:42:27",16,35.96,35.96,-575.32,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,AAA,"2025-09-16, 09:39:22",11,201.96,201.96,-2221.60,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,AAA,"2025-09-17, 13:52:55",-11,204.61,204.61,2250.69,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,EEE,"2025-09-18, 13:56:45",-10,311.09,311.09,3110.88,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,BBB,"2025-09-23, 11:34:59",-19,84.60,84.60,1607.46,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,EEE,"2025-09-24, 11:52:22",-17,225.87,225.87,3839.71,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,BBB,"2025-09-25, 09:37:12",20,86.18,86.18,-1723.70,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,EEE,"2025-09-29, 10:46:32",-7,193.71,193.71,1355.97,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,AAA,"2025-10-06, 11:35:20",-17,220.60,220.60,3750.22,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,FFF,"2025-10-06, 12:38:55",-11,27.61,27.61,303.74,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,AAA,"2025-10-14, 14:30:09",-11,184.26,184.26,2026.87,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,AAA,"2025-11-03, 11:34:36",-6,193.40,193.40,1160.40,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,CCC,"2025-11-03, 12:39:33",-28,125.56,125.56,3515.76,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,DDD,"2025-11-04, 11:38:03",2,53.40,53.40,-106.81,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,EEE,"2025-11-05, 09:56:41",21,244.04,244.04,-5124.81,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,AAA,"2025-11-07, 13:51:16",-6,189.08,189.08,1134.46,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,AAA,"2025-11-10, 11:41:29",15,152.61,152.61,-2289.16,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,FFF,"2025-11-10, 12:53:21",9,37.16,37.16,-334.46,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,AAA,"2025-11-14, 11:40:29",-21,189.42,189.42,3977.82,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,AAA,"2025-11-17, 10:44:38",16,214.35,214.35,-3429.58,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,EEE,"2025-11-17, 11:48:20",-12,282.49,282.49,3389.84,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,AAA,"2025-11-19, 09:57:56",21,212.25,212.25,-4457.26,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,FFF,"2025-11-20, 10:45:10",9,37.27,37.27,-335.41,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,AAA,"2025-11-20, 11:51:44",3,171.84,171.84,-515.53,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,AAA,"2025-11-20, 13:42:14",-21,237.76,237.76,4992.88,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,AAA,"2025-11-21, 13:36:08",-16,227.80,227.80,3644.76,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,AAA,"2025-11-24, 14:58:39",-19,173.21,173.21,3290.93,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,FFF,"2025-12-01, 12:36:47",15,39.18,39.18,-587.72,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,EEE,"2025-12-01, 13:55:24",19,263.56,263.56,-5007.68,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,BBB,"2025-12-01, 14:56:57",-8,105.03,105.03,840.27,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,BBB,"2025-12-12, 14:42:36",15,95.04,95.04,-1425.64,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,FFF,"2025-12-15, 09:31:50",-9,42.01,42.01,378.08,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,FFF,"2025-12-15, 14:47:55",-9,42.55,42.55,382.96,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,EEE,"2025-12-19, 13:54:06",15,192.16,192.16,-2882.42,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,BBB,"2026-01-06, 14:30:36",-20,92.71,92.71,1854.19,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,DDD,"2026-01-19, 10:30:31",-2,48.16,48.16,96.33,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,DDD,"2026-01-19, 10:55:37",-21,58.25,58.25,1223.24,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,AAA,"2026-01-19, 11:45:54",-15,135.59,135.59,2033.86,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,BBB,"2026-01-19, 11:53:17",6,86.77,86.77,-520.65,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,EEE,"2026-01-26, 12:58:00",12,286.68,286.68,-3440.15,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,EEE,"2026-01-27, 10:57:56",-19,280.32,280.32,5326.17,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,FFF,"2026-02-05, 10:32:55",-16,35.64,35.64,570.29,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,EEE,"2026-02-11, 10:44:38",13,250.91,250.91,-3261.87,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,FFF,"2026-02-13, 10:33:06",-15,37.79,37.79,566.84,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,DDD,"2026-02-16, 09:57:03",10,65.00,65.00,-650.00,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,BBB,"2026-02-23, 13:36:30",-6,90.19,90.19,541.12,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,DDD,"2026-02-25, 09:52:35",16,69.56,69.56,-1112.96,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,DDD,"2026-02-26, 10:50:12",7,62.08,62.08,-434.56,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,AAA,"2026-03-09, 10:43:09",-3,164.70,164.70,494.10,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,BBB,"2026-03-13, 14:48:56",7,88.80,88.80,-621.60,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,BBB,"2026-03-16, 09:49:17",18,88.07,88.07,-1585.19,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,CCC,"2026-03-16, 12:38:25",40,105.90,105.90,-4236.04,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,BBB,"2026-03-18, 11:41:01",-15,98.17,98.17,1472.52,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,BBB,"2026-03-24, 13:38:15",-18,98.09,98.09,1765.66,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,EEE,"2026-03-25, 13:35:33",11,278.29,278.29,-3061.14,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,AAA,"2026-03-26, 12:37:04",15,194.36,194.36,-2915.44,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,EEE,"2026-04-03, 14:53:42",-13,228.35,228.35,2968.53,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,DDD,"2026-04-09, 10:50:19",-16,69.23,69.23,1107.64,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,EEE,"2026-04-13, 09:47:27",-12,313.23,313.23,3758.70,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,EEE,"2026-04-13, 11:42:39",-21,253.67,253.67,5326.99,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,CCC,"2026-04-14, 10:30:14",-40,95.04,95.04,3801.55,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,DDD,"2026-04-17, 09:45:01",12,50.05,50.05,-600.54,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,EEE,"2026-04-17, 12:41:46",-15,180.58,180.58,2708.76,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,DDD,"2026-04-20, 09:32:55",-7,68.08,68.08,476.53,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,BBB,"2026-04-23, 11:31:58",21,85.00,85.00,-1784.98,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,FFF,"2026-04-23, 12:44:21",16,28.21,28.21,-451.36,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,BBB,"2026-04-28, 13:58:11",-21,81.73,81.73,1716.27,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,FFF,"2026-05-04, 12:50:48",-16,28.24,28.24,451.87,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,EEE,"2026-05-04, 13:37:41",7,250.30,250.30,-1752.08,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,EEE,"2026-05-06, 11:47:47",-11,269.46,269.46,2964.08,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,DDD,"2026-05-07, 09:30:31",-10,73.91,73.91,739.05,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,BBB,"2026-05-12, 11:44:30",6,112.08,112.08,-672.45,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,DDD,"2026-05-15, 10:52:42",11,68.13,68.13,-749.44,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,BBB,"2026-05-25, 10:54:05",-6,121.76,121.76,730.59,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,EEE,"2026-05-27, 12:42:14",7,216.20,216.20,-1513.43,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,EEE,"2026-06-03, 11:38:47",9,215.45,215.45,-1939.04,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,DDD,"2026-06-10, 11:31:41",-11,73.65,73.65,810.12,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,AAA,"2026-06-12, 10:41:47",6,207.38,207.38,-1244.30,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,AAA,"2026-06-15, 12:45:39",-15,178.24,178.24,2673.55,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,BBB,"2026-06-16, 10:53:22",-7,83.23,83.23,582.63,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,AAA,"2026-06-17, 10:53:12",2,170.94,170.94,-341.88,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,BBB,"2026-06-19, 09:49:38",17,107.79,107.79,-1832.43,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,DDD,"2026-06-22, 14:40:23",-12,48.18,48.18,578.16,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,EEE,"2026-06-29, 13:56:25",4,222.07,222.07,-888.29,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,CCC,"2026-06-30, 14:44:23",64,86.87,86.87,-5559.52,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,AAA,"2026-07-03, 14:51:53",21,183.96,183.96,-3863.22,-1,0,0,0,O
+Trades,Data,Order,Stocks,USD,CCC,"2026-07-06, 14:44:04",-64,88.24,88.24,5647.63,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,BBB,"2026-07-13, 12:35:55",-17,103.05,103.05,1751.93,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,AAA,"2026-08-24, 11:44:40",-6,226.02,226.02,1356.14,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,AAA,"2026-09-04, 10:35:31",-21,191.10,191.10,4013.14,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,EEE,"2026-09-08, 13:48:20",-7,217.25,217.25,1520.76,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,EEE,"2026-09-11, 12:36:52",-7,248.21,248.21,1737.46,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,EEE,"2026-09-29, 12:47:22",-4,249.54,249.54,998.16,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,EEE,"2026-10-05, 14:50:42",-9,206.04,206.04,1854.40,-1,0,0,0,C
+Trades,Data,Order,Stocks,USD,AAA,"2026-10-14, 14:30:27",-2,155.29,155.29,310.58,-1,0,0,0,C
+Corporate Actions,Header,Asset Category,Currency,Report Date,Date/Time,Description,Quantity,Proceeds,Value,Realized P/L,Code
+Corporate Actions,Data,Stocks,USD,2025-09-15,"2025-09-12, 20:25:00","CCC(XX0000000003) Split 4 for 1 (CCC, DEMO CCC CORP, XX0000000003)",0,0,0,0,
+Dividends,Header,Currency,Date,Description,Amount
+Dividends,Data,USD,2025-03-13,AAA(XX0000000001) Cash Dividend USD 0.62 per Share (Ordinary Dividend),12.4
+Dividends,Data,USD,2025-03-13,BBB(XX0000000002) Cash Dividend USD 0.62 per Share (Ordinary Dividend),7.8
+Dividends,Data,USD,2025-06-12,AAA(XX0000000001) Cash Dividend USD 0.62 per Share (Ordinary Dividend),12.4
+Dividends,Data,USD,2025-06-12,BBB(XX0000000002) Cash Dividend USD 0.62 per Share (Ordinary Dividend),7.8
+Dividends,Data,USD,2025-09-11,AAA(XX0000000001) Cash Dividend USD 0.62 per Share (Ordinary Dividend),12.4
+Dividends,Data,USD,2025-09-11,BBB(XX0000000002) Cash Dividend USD 0.62 per Share (Ordinary Dividend),7.8
+Dividends,Data,USD,2025-12-11,AAA(XX0000000001) Cash Dividend USD 0.62 per Share (Ordinary Dividend),12.4
+Dividends,Data,USD,2025-12-11,BBB(XX0000000002) Cash Dividend USD 0.62 per Share (Ordinary Dividend),7.8
+Dividends,Data,USD,2026-03-12,AAA(XX0000000001) Cash Dividend USD 0.62 per Share (Ordinary Dividend),12.4
+Dividends,Data,USD,2026-03-12,BBB(XX0000000002) Cash Dividend USD 0.62 per Share (Ordinary Dividend),7.8
+Dividends,Data,USD,2026-06-11,AAA(XX0000000001) Cash Dividend USD 0.62 per Share (Ordinary Dividend),12.4
+Dividends,Data,USD,2026-06-11,BBB(XX0000000002) Cash Dividend USD 0.62 per Share (Ordinary Dividend),7.8
+Dividends,Data,USD,2026-09-10,AAA(XX0000000001) Cash Dividend USD 0.62 per Share (Ordinary Dividend),12.4
+Dividends,Data,USD,2026-09-10,BBB(XX0000000002) Cash Dividend USD 0.62 per Share (Ordinary Dividend),7.8
+Dividends,Data,USD,2026-04-16,EEE(XX0000000005) Payment in Lieu of Dividend (Ordinary Dividend),3.1
+Withholding Tax,Header,Currency,Date,Description,Amount,Code
+Withholding Tax,Data,USD,2025-03-13,AAA(XX0000000001) Cash Dividend USD 0.62 per Share - US Tax,-1.86,
+Withholding Tax,Data,USD,2025-03-13,BBB(XX0000000002) Cash Dividend USD 0.62 per Share - US Tax,-1.17,
+Withholding Tax,Data,USD,2025-06-12,AAA(XX0000000001) Cash Dividend USD 0.62 per Share - US Tax,-1.86,
+Withholding Tax,Data,USD,2025-06-12,BBB(XX0000000002) Cash Dividend USD 0.62 per Share - US Tax,-1.17,
+Withholding Tax,Data,USD,2025-09-11,AAA(XX0000000001) Cash Dividend USD 0.62 per Share - US Tax,-1.86,
+Withholding Tax,Data,USD,2025-09-11,BBB(XX0000000002) Cash Dividend USD 0.62 per Share - US Tax,-1.17,
+Withholding Tax,Data,USD,2025-12-11,AAA(XX0000000001) Cash Dividend USD 0.62 per Share - US Tax,-1.86,
+Withholding Tax,Data,USD,2025-12-11,BBB(XX0000000002) Cash Dividend USD 0.62 per Share - US Tax,-1.17,
+Withholding Tax,Data,USD,2026-03-12,AAA(XX0000000001) Cash Dividend USD 0.62 per Share - US Tax,-1.86,
+Withholding Tax,Data,USD,2026-03-12,BBB(XX0000000002) Cash Dividend USD 0.62 per Share - US Tax,-1.17,
+Withholding Tax,Data,USD,2026-06-11,AAA(XX0000000001) Cash Dividend USD 0.62 per Share - US Tax,-1.86,
+Withholding Tax,Data,USD,2026-06-11,BBB(XX0000000002) Cash Dividend USD 0.62 per Share - US Tax,-1.17,
+Withholding Tax,Data,USD,2026-09-10,AAA(XX0000000001) Cash Dividend USD 0.62 per Share - US Tax,-1.86,
+Withholding Tax,Data,USD,2026-09-10,BBB(XX0000000002) Cash Dividend USD 0.62 per Share - US Tax,-1.17,

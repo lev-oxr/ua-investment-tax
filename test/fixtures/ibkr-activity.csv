@@ -10,3 +10,13 @@ Trades,Header,DataDiscriminator,Asset Category,Currency,Symbol,Date/Time,Quantit
 Trades,Data,Order,Forex,USD,EUR.USD,"2025-03-03, 09:00:00","10,000",1.05,1.05,-10500,-2,,0,0,
 Corporate Actions,Header,Asset Category,Currency,Report Date,Date/Time,Description,Quantity,Proceeds,Value,Realized P/L,Code
 Corporate Actions,Data,Stocks,USD,2025-06-10,"2025-06-09, 20:25:00",XYZ(US0000000000) Split 2 for 1,100,0,0,0,
+Corporate Actions,Data,Stocks,USD,2025-07-01,"2025-07-01, 20:25:00","OLD(US1111111111) Merged(Acquisition) for USD 10.00 per Share (OLD, OLD CORP, US1111111111)",-5,50,0,0,
+Corporate Actions,Data,Total,,,,,,0,0,0,
+Dividends,Header,Currency,Date,Description,Amount
+Dividends,Data,USD,2025-03-13,MSFT(US5949181045) Cash Dividend USD 0.83 per Share (Ordinary Dividend),830
+Dividends,Data,USD,2025-06-12,MSFT(US5949181045) Payment in Lieu of Dividend (Ordinary Dividend),8.3
+Dividends,Data,Total,,,838.3
+Dividends,Data,Total in USD,,,838.3
+Withholding Tax,Header,Currency,Date,Description,Amount,Code
+Withholding Tax,Data,USD,2025-03-13,MSFT(US5949181045) Cash Dividend USD 0.83 per Share - US Tax,-124.5,
+Withholding Tax,Data,Total,,,-124.5,

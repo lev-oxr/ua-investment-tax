@@ -50,6 +50,7 @@
         <button role="tab" id="t-decl" aria-controls="tab-decl" aria-selected="false" tabindex="-1">
           Декларація (Ф1)
         </button>
+        <button role="tab" id="t-an" aria-controls="tab-an" aria-selected="false" tabindex="-1">Аналітика</button>
         <button role="tab" id="t-law" aria-controls="tab-law" aria-selected="false" tabindex="-1">
           Як рахується (ПКУ)
         </button>
@@ -76,7 +77,8 @@
           <strong>Перетягніть CSV сюди або <u>оберіть файли</u></strong>
           <span class="hint">
             Flex Query (з полем Exchange) або Activity Statement з Interactive Brokers у форматі CSV, починаючи з року
-            першої купівлі. Підійде й власний CSV — <a href="sample.csv" download>зразок</a>.
+            першої купівлі. Підійде й власний CSV — <a href="sample.csv" download>зразок</a>. Спробувати без своїх
+            даних: <a href="demo.csv" download>демо-виписка IBKR</a> з вигаданими угодами, дивідендами й сплітом.
             <a href="#tab-guide">Як отримати виписку</a>
           </span>
         </label>
@@ -125,6 +127,31 @@
             <select class="year" aria-label="Звітний рік"></select>
           </div>
           <div id="decl"></div>
+        </div>
+      </section>
+
+      <section id="tab-an" role="tabpanel" aria-labelledby="t-an" hidden>
+        <p class="empty" id="anEmpty">Спершу завантажте виписки на вкладці <a href="#tab-calc">«Розрахунок»</a>.</p>
+        <div id="anBody" hidden>
+          <p class="meta">
+            Уся завантажена історія. Угода — частина лота від купівлі до продажу за FIFO, у валюті угоди, з комісіями,
+            без курсів НБУ й дивідендів.
+          </p>
+          <div id="analytics"></div>
+          <article class="card benchcard">
+            <h3>Порівняння з індексом</h3>
+            <p class="meta">
+              Чи заробила б купівля індексу більше за ті самі дні, що й кожна угода. Потрібен CSV з денними цінами,
+              наприклад SPY з Yahoo Finance (Historical Data → Download), Stooq чи Nasdaq: стовпці Date і Close або Adj
+              Close. Adj Close враховує дивіденди індексу, тож порівняння суворіше.
+            </p>
+            <label class="btn">
+              <input type="file" id="benchFile" class="sr" accept=".csv,text/csv" />
+              Завантажити ціни індексу
+            </label>
+            <div class="notice error" id="benchErr" role="alert" hidden></div>
+            <div id="bench"></div>
+          </article>
         </div>
       </section>
 
@@ -306,6 +333,36 @@
             </div>
           </article>
 
+          <article class="card">
+            <h3>9. Дивіденди з-за кордону</h3>
+            <p>
+              Дивіденди від іноземної компанії — іноземний дохід. Вони не входять в інвестиційний прибуток, а
+              декларуються окремо, у рядку 10.10. Сума переводиться в гривні за курсом НБУ на дату виплати.
+            </p>
+            <p>
+              <b>ПДФО 9%</b> — половина ставки 18% для дивідендів, нарахованих нерезидентами. <b>Військовий збір</b> —
+              за загальною ставкою.
+            </p>
+            <blockquote>
+              «…у половинному розмірі ставки, встановленої у пункті 167.1 цієї статті - для доходів у вигляді
+              дивідендів… нарахованих нерезидентами…»
+            </blockquote>
+            <p>
+              Податок, утриманий у США, зменшує український, лише якщо є документ податкового органу США, оформлений за
+              ст. 13 ПКУ. Без нього заліку немає, тож інструмент утриманий податок лише показує.
+            </p>
+            <p class="meta">
+              Виплата замість дивіденду (payment in lieu) — коли брокер позичив ваші акції. Її платить не емітент, тож
+              інструмент рахує її як інший іноземний дохід за ставкою 18%. Звірте з бухгалтером.
+            </p>
+            <div class="refs">
+              <a class="ref" data-law="foreign">пп. 170.11.1</a>
+              <a class="ref" data-law="divRate">пп. 167.5.4</a>
+              <a class="ref" data-law="foreignCredit">пп. 170.11.2 — залік</a>
+              <a class="ref" data-law="fxIncome">п. 164.4</a>
+            </div>
+          </article>
+
           <p class="meta">
             Посилання ведуть на ПКУ в редакції від 01.11.2026 на zakon.rada.gov.ua (перевірено 07.11.2026).
           </p>
@@ -354,6 +411,18 @@
               </li>
             </ul>
             <p>Натисніть <b>Save</b> внизу вікна.</p>
+            <p>Для дивідендів і сплітів у тому самому шаблоні відкрийте ще два розділи:</p>
+            <ul>
+              <li>
+                <b>Cash Transactions:</b> Dividends, Withholding Tax, Payment In Lieu Of Dividends. Поля: Currency,
+                Symbol, Description, Date/Time, Amount, Type.
+              </li>
+              <li><b>Corporate Actions:</b> поля Symbol, Description, Date/Time, Quantity, Type.</li>
+            </ul>
+            <p class="meta">
+              Назви розділів і полів записано з пам'яті, а не з кабінету: якщо вони трохи інші, оберіть найближчі.
+              Activity Statement містить дивіденди, податок і спліти без налаштувань.
+            </p>
           </article>
 
           <article class="card">
@@ -410,9 +479,13 @@
           <li>FIFO — вибір цього інструмента, закон метод не визначає;</li>
           <li>
             перенесений збиток рахується з усієї завантаженої історії (якщо ті роки не декларувались, його можна
-            вимкнути біля вибору року); спліти й перенесення позицій між брокерами не враховано;
+            вимкнути біля вибору року); спліти враховано з виписок IBKR, а злиття, виділення й перенесення позицій між
+            брокерами — ні;
           </li>
-          <li>рахуються лише акції: дивіденди, опціони й варанти не враховано, поріг пп. 170.2.8 не застосовано.</li>
+          <li>
+            рахуються акції й дивіденди з них: опціони й варанти не враховано, поріг пп. 170.2.8 не застосовано,
+            податок, утриманий у США, від українського не віднімається.
+          </li>
         </ul>
         Проєкт не пов'язаний з Interactive Brokers.
       </footer>

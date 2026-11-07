@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { esc, uah, rate4, qty, notice, files, result, detail, declaration, csv } from '../site/ui/render.js';
+import { esc, uah, rate4, qty, notice, files, result, detail, declaration, csv, dividends } from '../site/ui/render.js';
 import { totals } from '../site/core/tax.js';
 
 const NB = '\u00a0'; // uk-UA розділяє тисячі нерозривним пробілом
@@ -151,4 +151,27 @@ test('CSV: числа з крапкою, поля з комою в лапках'
     'date,symbol,qty,currency,nbu_rate,income_uah,expense_uah,result_uah,buy_dates,buys_within_30_days\n' +
       '2025-03-10,"BRK,B",2,USD,42,10080.00,8442.00,1638.00,2025-01-10,2025-03-20@NYSE\n',
   );
+});
+
+test('дивіденди: у «Разом до сплати», блок з екранованим тікером, рядок 10.10 лише коли є дохід', () => {
+  const t = totals([row()], 0, 2025);
+  const d = { income: 1000, pdfo: 90, milRate: 0.05, military: 50, withheldUah: 150 };
+  assert.match(result('2025', [row()], t, d), new RegExp(`${uah(t.pdfo + t.military + 140)}`));
+  const div = {
+    date: '2025-03-13',
+    symbol: '<x>',
+    currency: 'USD',
+    type: 'LIEU',
+    gross: 1,
+    withheld: 0,
+    rate: 41,
+    income: 41,
+    withheldUah: 0,
+  };
+  const html = dividends([div], d);
+  assert.match(html, /&lt;x&gt;/);
+  assert.match(html, /замість дивіденду/);
+  assert.equal(dividends([], d), '');
+  assert.match(declaration('2025', [row()], t, d), /рядок 10\.10[\s\S]*1\u00a0000,00[\s\S]*90,00[\s\S]*50,00/);
+  assert.doesNotMatch(declaration('2025', [row()], t, { ...d, income: 0 }), /10\.10/);
 });
