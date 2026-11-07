@@ -1,0 +1,12 @@
+Statement,Header,Field Name,Field Value
+Statement,Data,Title,Activity Statement
+Trades,Header,DataDiscriminator,Asset Category,Currency,Symbol,Date/Time,Quantity,T. Price,C. Price,Proceeds,Comm/Fee,Basis,Realized P/L,MTM P/L,Code
+Trades,Data,Order,Stocks,USD,MSFT,"2025-01-15, 10:31:02",1000,421.5,422.1,-421500,-5,421505,0,600,O
+Trades,Data,Order,Stocks,USD,MSFT,"2025-08-12, 15:02:44",-400,522.0,521.4,208800,-2.5,-168602,40197.5,240,C
+Trades,Data,ClosedLot,Stocks,USD,MSFT,2025-01-15,400,421.5,,,,168602,,,
+Trades,SubTotal,,Stocks,USD,MSFT,,600,,,-212700,-7.5,252903,40197.5,840,
+Trades,Total,,Stocks,USD,,,,,,-212700,-7.5,252903,40197.5,840,
+Trades,Header,DataDiscriminator,Asset Category,Currency,Symbol,Date/Time,Quantity,T. Price,C. Price,Proceeds,Comm/Fee,,Realized P/L,MTM P/L,Code
+Trades,Data,Order,Forex,USD,EUR.USD,"2025-03-03, 09:00:00","10,000",1.05,1.05,-10500,-2,,0,0,
+Corporate Actions,Header,Asset Category,Currency,Report Date,Date/Time,Description,Quantity,Proceeds,Value,Realized P/L,Code
+Corporate Actions,Data,Stocks,USD,2025-06-10,"2025-06-09, 20:25:00",XYZ(US0000000000) Split 2 for 1,100,0,0,0,

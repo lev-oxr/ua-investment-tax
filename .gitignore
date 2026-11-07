@@ -1,5 +1,6 @@
 data/
-docs/
+docs/*
+!docs/screenshot.png
 node_modules/
 coverage/
 .DS_Store

@@ -1,0 +1,37 @@
+name: Виписку не розпізнано
+description: Сторінка не змогла прочитати файл або порахувала неправильно
+labels: [parser]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Не додавайте реальну виписку.** Замініть номер рахунку на `U0000000`, а тікери, кількості й ціни — на вигадані.
+        Достатньо рядка заголовка і двох-трьох рядків з угодами, на яких виникає помилка.
+  - type: dropdown
+    id: format
+    attributes:
+      label: Формат
+      options: [IBKR Flex Query, IBKR Activity Statement, Власний CSV, Інший брокер]
+    validations:
+      required: true
+  - type: textarea
+    id: error
+    attributes:
+      label: Що показала сторінка
+      description: Текст помилки або що саме порахувалось не так
+    validations:
+      required: true
+  - type: textarea
+    id: sample
+    attributes:
+      label: Знеособлені рядки файлу
+      render: csv
+    validations:
+      required: true
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Приватність
+      options:
+        - label: Номер рахунку прибрано, реальні угоди замінено вигаданими
+          required: true

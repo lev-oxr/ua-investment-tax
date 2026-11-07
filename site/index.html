@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Мережа дозволена лише до bank.gov.ua: «файли не залишають браузер» гарантує сам браузер -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; connect-src https://bank.gov.ua; img-src 'self' data:; style-src 'self'; script-src 'self'"
+    />
+    <title>Інвестиційний прибуток</title>
+    <meta
+      name="description"
+      content="Інвестиційний прибуток з виписки брокера за ПКУ: FIFO, курси НБУ, ПДФО і військовий збір. Дані не залишають браузер."
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module" src="app.js"></script>
+  </head>
+  <body>
+    <main>
+      <header class="top">
+        <h1>Інвестиційний прибуток</h1>
+        <p class="sub">
+          Розрахунок для декларації з продажу акцій: собівартість за FIFO, курси НБУ на дату кожної угоди, ПДФО і
+          військовий збір.
+        </p>
+        <span class="badge">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.2"
+            aria-hidden="true"
+          >
+            <rect x="5" y="11" width="14" height="10" rx="2" />
+            <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+          </svg>
+          Файли не залишають браузер
+        </span>
+      </header>
+
+      <nav class="tabs" role="tablist" aria-label="Розділи">
+        <button role="tab" id="t-calc" aria-controls="tab-calc" aria-selected="true">Розрахунок</button>
+        <button role="tab" id="t-detail" aria-controls="tab-detail" aria-selected="false" tabindex="-1">
+          Детально
+        </button>
+        <button role="tab" id="t-law" aria-controls="tab-law" aria-selected="false" tabindex="-1">
+          Як рахується (ПКУ)
+        </button>
+        <button role="tab" id="t-guide" aria-controls="tab-guide" aria-selected="false" tabindex="-1">
+          Виписка з IBKR
+        </button>
+      </nav>
+
+      <section id="tab-calc" role="tabpanel" aria-labelledby="t-calc">
+        <label class="drop" id="drop">
+          <input type="file" id="file" class="sr" accept=".csv,text/csv" multiple />
+          <svg
+            width="32"
+            height="32"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            aria-hidden="true"
+          >
+            <path d="M12 16V4m0 0-4 4m4-4 4 4" />
+            <path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
+          </svg>
+          <strong>Перетягніть CSV сюди або <u>оберіть файли</u></strong>
+          <span class="hint">
+            Flex Query (з полем Exchange) або Activity Statement з Interactive Brokers у форматі CSV, починаючи з року
+            першої купівлі. Підійде й власний CSV — <a href="sample.csv" download>зразок</a>.
+            <a href="#tab-guide">Як отримати виписку</a>
+          </span>
+        </label>
+        <ul class="chips" id="files"></ul>
+
+        <div class="notice warn" id="warn" hidden></div>
+        <div class="notice error" id="err" role="alert" hidden></div>
+
+        <section id="report" hidden>
+          <div class="toolbar">
+            <h2>Звітний рік</h2>
+            <select class="year" aria-label="Звітний рік"></select>
+            <label class="check" id="carryBox" hidden>
+              <input type="checkbox" id="carry" checked />
+              Враховувати збиток минулих років: <span id="carryAmount"></span>
+            </label>
+            <span class="spacer"></span>
+            <button class="btn" id="csv" type="button">Завантажити CSV</button>
+          </div>
+          <div id="loading" hidden>
+            <p id="status" role="status"></p>
+            <progress id="bar" value="0" max="1" aria-label="Завантаження курсів НБУ"></progress>
+          </div>
+          <div id="result"></div>
+        </section>
+      </section>
+
+      <section id="tab-detail" role="tabpanel" aria-labelledby="t-detail" hidden>
+        <p class="empty" id="detailEmpty">Спершу завантажте виписки на вкладці <a href="#tab-calc">«Розрахунок»</a>.</p>
+        <div id="detailBody" hidden>
+          <div class="toolbar">
+            <h2>Звітний рік</h2>
+            <select class="year" aria-label="Звітний рік"></select>
+            <span class="spacer"></span>
+            <button class="btn" id="print" type="button">Друк / PDF</button>
+          </div>
+          <div id="detail"></div>
+        </div>
+      </section>
+
+      <!-- ПКУ -->
+      <section id="tab-law" role="tabpanel" aria-labelledby="t-law" hidden>
+        <div class="law">
+          <article class="card">
+            <h3>1. Що таке інвестиційний прибуток</h3>
+            <p>
+              Для кожного продажу: дохід від продажу мінус документально підтверджені витрати на купівлю. Курсова
+              різниця входить у розрахунок.
+            </p>
+            <blockquote>
+              «…позитивна різниця між доходом… від продажу окремого інвестиційного активу з урахуванням курсової різниці
+              (за наявності), та його вартістю…»
+            </blockquote>
+            <div class="refs"><a class="ref" data-law="profit">пп. 170.2.2</a></div>
+          </article>
+
+          <article class="card">
+            <h3>2. За яким курсом НБУ</h3>
+            <p><b>Дохід від продажу</b> — за курсом НБУ на дату нарахування (отримання) доходу.</p>
+            <blockquote>
+              «…перераховуються у гривні за валютним курсом Національного банку України, що діє на момент нарахування
+              (отримання) таких доходів.»
+            </blockquote>
+            <p>
+              <b>Витрати на купівлю</b> — за курсом на день придбання. Саме так ПКУ визначає курсову різницю: між курсом
+              на день придбання і на день продажу.
+            </p>
+            <p class="meta">
+              У цьому інструменті датою доходу береться дата угоди. Чи не мається на увазі дата розрахунку (T+1), кодекс
+              прямо не каже — звірте з бухгалтером.
+            </p>
+            <div class="refs">
+              <a class="ref" data-law="fxIncome">п. 164.4</a>
+              <a class="ref" data-law="fxDiff">пп. 14.1.96-1</a>
+            </div>
+          </article>
+
+          <article class="card">
+            <h3>3. Собівартість при частковому продажу</h3>
+            <p>
+              ПКУ не визначає метод (FIFO, середня ціна тощо). ДПС у роз'ясненнях вимагає, щоб витрати визначались
+              пропорційно до частки проданого активу.
+            </p>
+            <p class="meta">
+              Тут використано FIFO: першими продаються найстаріші лоти, а комісія купівлі розподіляється пропорційно
+              кількості. Це вибір інструмента, а не вимога закону.
+            </p>
+            <div class="refs">
+              <a
+                class="ref"
+                target="_blank"
+                rel="noopener"
+                href="https://news.dtkt.ua/taxation/pdfo/99880-niuansi-deklaruvannia-operacii-z-investiciinimi-aktivami"
+                >роз'яснення ДПС, 09.06.2025</a
+              >
+            </div>
+          </article>
+
+          <article class="card">
+            <h3>4. Збитки</h3>
+            <p>
+              Збиток з одного продажу зменшує прибуток з інших у тому самому році. Якщо за рік загальний результат
+              від'ємний, він переноситься на наступні роки, доки не погаситься.
+            </p>
+            <blockquote>
+              «…його сума переноситься у зменшення загального фінансового результату операцій з інвестиційними активами
+              наступних років до його повного погашення.»
+            </blockquote>
+            <div class="refs">
+              <a class="ref" data-law="loss">пп. 170.2.3</a>
+              <a class="ref" data-law="yearTotal">пп. 170.2.6</a>
+            </div>
+          </article>
+
+          <article class="card callout" id="wash-rule">
+            <h3>5. «Правило 30 днів» (wash sale)</h3>
+            <p>
+              Якщо ви продали цінні папери і за 30 календарних днів <b>до</b> цього продажу або протягом 30 днів
+              <b>після</b> нього купили ідентичні, то:
+            </p>
+            <ul>
+              <li><b>а)</b> збиток від цього продажу не враховується у фінансовому результаті;</li>
+              <li>
+                <b>б)</b> вартість купленого пакета дорівнює ціні його купівлі, але не може бути нижчою за ціну
+                проданого пакета.
+              </li>
+            </ul>
+            <blockquote>
+              «…протягом 30 календарних днів до дня продажу пакета цінних паперів… а також протягом наступних 30
+              календарних днів з дня такого продажу платник податку придбаває пакет ідентичних цінних паперів…»
+            </blockquote>
+            <p>
+              <b>Ідентичні</b> — випущені тим самим емітентом на тотожних умовах. AAPL і AAPL — ідентичні. VOO та IVV
+              відстежують той самий індекс, але випущені різними емітентами, тож ідентичними не є.
+            </p>
+
+            <h4>Приклад</h4>
+            <p>
+              Купили 10 AAPL по 200 USD за курсом 41,00 — витрати 82 000 ₴. Продали по 150 USD за курсом 41,50 — дохід
+              62 250 ₴, збиток 19 750 ₴. Через 10 днів купили знову 10 AAPL по 140 USD за курсом 41,50 — 58 100 ₴.
+            </p>
+            <p>
+              Якщо правило діє: збиток 19 750 ₴ не враховується, а вартість нового пакета для податку — 62 250 ₴ (ціна
+              проданого), а не 58 100 ₴. Тобто з 19 750 ₴ збитку колись зменшить податок лише різниця 4 150 ₴, і тільки
+              коли продасте новий пакет.
+            </p>
+            <p class="meta">
+              У США заблокований збиток додається до вартості нового пакета й не пропадає. В українському правилі збиток
+              просто не враховується, тож воно суворіше.
+            </p>
+
+            <h4>Коли правило не діє</h4>
+            <blockquote>
+              «Дія підпунктів 170.2.4 та 170.2.5 не поширюється на придбання або продаж цінних паперів та деривативів,
+              що здійснюються на фондовій біржі…»
+            </blockquote>
+            <p>
+              Крім угод на фондовій біржі, винятки ще такі: пакет понад 25% статутного капіталу емітента, викуп акцій
+              самим емітентом, купівля під час приватного розміщення і папери, які не можуть обертатися на біржі.
+            </p>
+
+            <h4>Чи стосується це угод через IBKR</h4>
+            <p>Найімовірніше, ні, але однозначної відповіді кодекс не дає:</p>
+            <ul>
+              <li>ПКУ не визначає «фондову біржу» і окремо не каже, чи рахується іноземна біржа (NYSE, NASDAQ).</li>
+              <li>
+                IBKR може виконати ордер поза біржею, наприклад у dark pool чи на власному альтернативному майданчику. У
+                виписці Activity Statement місце виконання не видно, воно є в підтвердженнях угод.
+              </li>
+            </ul>
+            <p>
+              Інструмент правило не застосовує. Якщо ви продавали акції зі збитком і купували ті самі в межах 30 днів до
+              або після продажу, уточніть ці угоди в бухгалтера.
+            </p>
+            <p class="meta">
+              Строку в 90 днів немає ні в ПКУ, ні в американському правилі: у США вікно теж 30 днів до і після продажу.
+            </p>
+            <div class="refs">
+              <a class="ref" data-law="wash">пп. 170.2.4</a>
+              <a class="ref" data-law="washExempt">пп. 170.2.6 — винятки</a>
+              <a class="ref" data-law="identical">пп. 170.2.7 «в» — ідентичні папери</a>
+              <a class="ref" data-law="buyback">пп. 170.2.5 — схоже правило для зворотного викупу</a>
+            </div>
+          </article>
+
+          <article class="card">
+            <h3>6. Ставки</h3>
+            <p>
+              <b>ПДФО 18%</b> — інвестиційний прибуток належить до пасивних доходів. <b>Військовий збір 5%</b> — з
+              01.12.2024 (Закон № 4015-IX), раніше 1,5%.
+            </p>
+            <div class="refs">
+              <a class="ref" data-law="pdfo">пп. 167.5.1</a>
+              <a class="ref" data-law="military">п. 16-1 підр. 10 розд. XX, пп. 1.3</a>
+            </div>
+          </article>
+
+          <article class="card">
+            <h3>7. Коли не оподатковується</h3>
+            <p>
+              Якщо весь дохід від продажу інвестиційних активів за рік не перевищує прожитковий мінімум для працездатної
+              особи на 1 січня × 1,4 (округлено до 10 ₴), він не оподатковується. Інструмент цього порогу не застосовує.
+            </p>
+            <div class="refs">
+              <a class="ref" data-law="exemption">пп. 170.2.8</a>
+              <a class="ref" data-law="minimum">пп. 169.4.1</a>
+            </div>
+          </article>
+
+          <article class="card">
+            <h3>8. Строки</h3>
+            <p>Декларація — до <b>1 травня</b> року, що настає за звітним. Сплата — до <b>1 серпня</b>.</p>
+            <div class="refs">
+              <a class="ref" data-law="deadline">пп. 49.18.4</a>
+              <a class="ref" data-law="payment">п. 179.7</a>
+            </div>
+          </article>
+
+          <p class="meta">
+            Посилання ведуть на ПКУ в редакції від 27.10.2026 на zakon.rada.gov.ua (перевірено 31.10.2026).
+          </p>
+        </div>
+      </section>
+
+      <!-- Гайд IBKR -->
+      <section id="tab-guide" role="tabpanel" aria-labelledby="t-guide" hidden>
+        <div class="law">
+          <article class="card">
+            <h3>Що це дає</h3>
+            <p>
+              Шаблон Flex Query один раз налаштовується в кабінеті IBKR, а далі за хвилину видає CSV з усіма угодами за
+              рік: кожне виконання окремо, разом із майданчиком (Exchange). Сторінка читає цей файл напряму.
+            </p>
+            <p class="meta">Шаблон створюється один раз. Потім щороку достатньо кроків 4 і 5.</p>
+          </article>
+
+          <article class="card">
+            <h3>1. Відкрити Flex Queries</h3>
+            <p>
+              Увійдіть у Client Portal у режимі <b>Live</b>. Меню <b>Performance &amp; Reports → Statements</b>, вкладка
+              <b>Flex Queries</b>.
+            </p>
+            <p class="meta">
+              Банер «Another session with the same user name already exists» можна ігнорувати: для звітів доступ до
+              торгівлі не потрібен.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>2. Створити шаблон</h3>
+            <p>
+              У панелі <b>Activity Flex Query</b> натисніть <b>+</b> (Create). Query Name — наприклад,
+              <code>ua-tax-trades</code>.
+            </p>
+            <p>У списку Sections відкрийте <b>Trades</b>:</p>
+            <ul>
+              <li>
+                <b>Options:</b> лише <b>Execution</b>. Без нього поля неактивні, а з Closed Lots чи Order не буде поля
+                Exchange для кожного виконання.
+              </li>
+              <li>
+                <b>Поля:</b> Currency, Asset Class, Symbol, Date/Time, Trade Date, Exchange, Quantity, TradePrice, IB
+                Commission, IB Commission Currency, Buy/Sell, Level Of Detail.
+              </li>
+            </ul>
+            <p>Натисніть <b>Save</b> внизу вікна.</p>
+          </article>
+
+          <article class="card">
+            <h3>3. Налаштувати формат</h3>
+            <ul>
+              <li>
+                <b>Format:</b> CSV. Include column headers — <b>Yes</b>, header and trailer records і section code —
+                <b>No</b>.
+              </li>
+              <li><b>Period:</b> будь-який, наприклад Last 365 Calendar Days. Конкретні дати задаються при запуску.</li>
+              <li><b>Date Format:</b> yyyy-MM-dd, <b>Time Format:</b> HH:mm:ss. Інші формати сторінка теж розуміє.</li>
+            </ul>
+            <p><b>Continue</b> → перевірте огляд → <b>Create</b> → <b>Ok</b>.</p>
+          </article>
+
+          <article class="card">
+            <h3>4. Запустити за кожен рік</h3>
+            <p>Біля шаблону натисніть <b>Run</b>:</p>
+            <ul>
+              <li><b>Period:</b> Custom Date Range, From — 1 січня, To — 31 грудня потрібного року.</li>
+              <li><b>Format:</b> CSV. При повторному запуску поле буває порожнім — виберіть знову.</li>
+              <li>Натисніть <b>Run</b> — завантажиться файл <code>ua-tax-trades.csv</code>.</li>
+            </ul>
+            <p>
+              Повторіть для кожного року, починаючи з року відкриття рахунку: без ранніх купівель собівартість не
+              порахувати. Один запуск — не більше року.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>5. Завантажити на сторінку</h3>
+            <p>
+              На вкладці <a href="#tab-calc">«Розрахунок»</a> перетягніть усі файли разом. Дублікати угод між файлами
+              відкидаються.
+            </p>
+            <p class="meta">
+              Не змішуйте за той самий період Flex Query й Activity Statement: Activity Statement рахує ордер, а Flex —
+              кожне виконання окремо, тож сторінка покаже помилку замість подвійного рахунку. Валютні обміни (CASH) і
+              варанти (WAR) пропускаються з попередженням.
+            </p>
+          </article>
+
+          <p class="meta">
+            Кроки записано в Client Portal 31.10.2026. Інтерфейс IBKR змінюється, тож назви кнопок можуть трохи
+            відрізнятись.
+          </p>
+        </div>
+      </section>
+
+      <footer>
+        Це розрахунок, а не податкова порада. Перед поданням звірте з бухгалтером:
+        <ul>
+          <li>датою доходу тут береться дата угоди, а не розрахунку (T+1);</li>
+          <li>FIFO — вибір цього інструмента, закон метод не визначає;</li>
+          <li>
+            перенесений збиток рахується з усієї завантаженої історії (якщо ті роки не декларувались, його можна
+            вимкнути біля вибору року); спліти й перенесення позицій між брокерами не враховано;
+          </li>
+          <li>рахуються лише акції: дивіденди, опціони й варанти не враховано, поріг пп. 170.2.8 не застосовано.</li>
+        </ul>
+        Проєкт не пов'язаний з Interactive Brokers.
+      </footer>
+    </main>
+  </body>
+</html>

@@ -66,3 +66,19 @@ export function parseDateTime(s) {
   if (Number.isNaN(check.getTime()) || check.toISOString().slice(0, 10) !== date) return ['', ''];
   return [date, m[4] ? `${m[4]}:${m[5]}:${m[6]}` : ''];
 }
+
+/**
+ * @param {Record<string, any>} t
+ * @returns {boolean}
+ */
+export function isValidTrade(t) {
+  return (
+    Boolean(t.date) &&
+    (t.type === 'BUY' || t.type === 'SELL') &&
+    Boolean(t.symbol) &&
+    t.qty > 0 &&
+    t.price >= 0 &&
+    t.fee >= 0 &&
+    /^[A-Z]{3}$/.test(t.currency)
+  );
+}
