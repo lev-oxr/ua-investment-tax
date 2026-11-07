@@ -6,7 +6,7 @@ import { dividendRows, dividendTotals } from './core/dividends.js';
 import { lawUrl } from './core/law.js';
 import { getRates } from './nbu.js';
 import * as ui from './ui/render.js';
-import { roundtrips } from './core/analytics/roundtrips.js';
+import { roundtrips, positions } from './core/analytics/roundtrips.js';
 import { metrics } from './core/analytics/metrics.js';
 import { behavior } from './core/analytics/behavior.js';
 import { parsePrices, benchmark } from './core/analytics/benchmark.js';
@@ -107,7 +107,7 @@ async function load(files) {
       $(`${id}Body`).hidden = false;
     }
     render();
-    trips = roundtrips(rows);
+    trips = positions(roundtrips(rows));
     renderAnalytics();
   } catch (e) {
     $('report').hidden = true;

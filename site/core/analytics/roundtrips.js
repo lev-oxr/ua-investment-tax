@@ -41,3 +41,42 @@ export function roundtrips(sales) {
     }),
   );
 }
+
+/**
+ * Збирає пари в позиції: від першої купівлі тікера, доки всі куплені акції не продано. Докупівлі й часткові
+ * продажі однієї позиції — одне рішення, тож для статистики це одне спостереження, а не кілька залежних.
+ * Пари перетинаються в часі — позиція та сама; вихід одного дня з входом наступної пари — нова позиція.
+ * ponytail: за датами без часу купівля й продаж того самого дня вважаються новою позицією
+ * @param {RoundTrip[]} trips
+ * @returns {RoundTrip[]} entry — перша купівля, exit — останній продаж, days — середнє днів пар, зважене на витрати
+ */
+export function positions(trips) {
+  const sorted = [...trips].sort((a, b) =>
+    a.symbol < b.symbol ? -1 : a.symbol > b.symbol ? 1 : a.entry < b.entry ? -1 : a.entry > b.entry ? 1 : 0,
+  );
+  const groups = [];
+  for (const t of sorted) {
+    const g = groups.at(-1);
+    if (g && g.symbol === t.symbol && t.entry < g.exit) {
+      g.trips.push(t);
+      if (t.exit > g.exit) g.exit = t.exit;
+    } else groups.push({ symbol: t.symbol, exit: t.exit, trips: [t] });
+  }
+  return groups.map(({ trips: ts }) => {
+    const sum = (k) => ts.reduce((a, t) => a + t[k], 0);
+    const cost = sum('cost');
+    const proceeds = sum('proceeds');
+    return {
+      symbol: ts[0].symbol,
+      currency: ts[0].currency,
+      entry: ts[0].entry,
+      exit: ts.reduce((a, t) => (t.exit > a ? t.exit : a), ts[0].exit),
+      qty: sum('qty'),
+      cost,
+      proceeds,
+      result: proceeds - cost,
+      ret: cost > 0 ? (proceeds - cost) / cost : NaN,
+      days: cost > 0 ? ts.reduce((a, t) => a + t.days * t.cost, 0) / cost : sum('days') / ts.length,
+    };
+  });
+}

@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { fifo } from '../../site/core/fifo.js';
-import { roundtrips } from '../../site/core/analytics/roundtrips.js';
+import { roundtrips, positions } from '../../site/core/analytics/roundtrips.js';
 
 const trade = (date, type, qty, price, fee = 0, symbol = 'AAPL') => ({
   date,
@@ -76,4 +76,46 @@ test('частина продажу без купівлі пари не має',
   const rt = pairs([trade('2025-01-10', 'BUY', 1, 100), trade('2025-02-10', 'SELL', 3, 120, 3)]);
   assert.equal(rt.length, 1);
   near(rt[0].result, 120 - 1 - 100); // лише третина комісії продажу
+});
+
+test('позиції: докупівля й часткові продажі — одна позиція, повторний вхід після закриття — нова', () => {
+  const ps = positions(
+    pairs([
+      trade('2025-01-10', 'BUY', 10, 100), // позиція 1
+      trade('2025-02-10', 'BUY', 10, 110), // докупівля
+      trade('2025-03-10', 'SELL', 15, 120), // частковий продаж: 2 пари
+      trade('2025-04-10', 'SELL', 5, 90), // закриття
+      trade('2025-05-12', 'BUY', 4, 100), // позиція 2
+      trade('2025-05-20', 'SELL', 4, 105),
+      trade('2025-01-10', 'BUY', 1, 50, 0, 'VOO'), // інший тікер у той самий час
+      trade('2025-04-10', 'SELL', 1, 55, 0, 'VOO'),
+    ]),
+  );
+  assert.deepEqual(
+    ps.map((p) => [p.symbol, p.entry, p.exit, p.qty]),
+    [
+      ['AAPL', '2025-01-10', '2025-04-10', 20],
+      ['AAPL', '2025-05-12', '2025-05-20', 4],
+      ['VOO', '2025-01-10', '2025-04-10', 1],
+    ],
+  );
+  const [a] = ps;
+  near(a.cost, 1000 + 1100);
+  near(a.result, 15 * 120 + 5 * 90 - 2100);
+  near(a.ret, a.result / 2100);
+  // дні пар: 59 (витрати 1000), 28 (550), 59 (550) — середнє, зважене на витрати
+  near(a.days, (59 * 1000 + 28 * 550 + 59 * 550) / 2100);
+});
+
+test('позиції: вихід і новий вхід того самого дня — дві позиції; порожній вхід — порожньо', () => {
+  const ps = positions(
+    pairs([
+      trade('2025-01-10', 'BUY', 1, 100),
+      trade('2025-02-10', 'SELL', 1, 110),
+      trade('2025-02-10', 'BUY', 1, 110),
+      trade('2025-03-10', 'SELL', 1, 120),
+    ]),
+  );
+  assert.equal(ps.length, 2);
+  assert.deepEqual(positions([]), []);
 });
